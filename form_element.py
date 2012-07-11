@@ -1,14 +1,12 @@
 from xml.etree import ElementTree
 
-def parseFormElement(element):
-    assert element.tag == 'form_element'
-    form_element = FormElement()
-    form_element.name = element.attrib['name']
-    form_element.display_name = element.attrib['display_name']
-    form_element.input_element = element.iter('element').next().text
-    return form_element
-
 class FormElement:
+    def __init__(self, element):
+        assert element.tag == 'form_element'
+        self.name = element.attrib['name']
+        self.display_name = element.attrib['display_name']
+        self.input_element = element.find('element').text
+
     def __str__(self):
         return 'name: %s, display name: %s, input: %s' % (self.name, self.display_name, self.input_element)
 """
@@ -26,7 +24,7 @@ def main():
   <element>&lt;input id="EnrollParam0" type="password" name="passphrase" /&gt;</element>
 </form_element>"""
 
-    fe = parseFormElement(ElementTree.XML(testString))
+    fe = FormElement(ElementTree.XML(testString))
     print fe
     
 if __name__ == '__main__':

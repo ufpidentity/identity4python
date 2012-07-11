@@ -1,6 +1,7 @@
 import connection_handler
-import display_item
-import result
+from display_item import DisplayItem
+from form_element import FormElement
+from result import Result
 from xml.etree import ElementTree
 
 """
@@ -14,30 +15,22 @@ from xml.etree import ElementTree
      </enrollment_pretext>
 """
 class PreEnrollmentResult:
-    pass
-
-def parsePreEnrollmentResult(xml):
-    element = ElementTree.XML(xml)
-    assert element.tag == 'enrollment_pretext'
-    pre_enrollment_result = PreEnrollmentResult()
-    pre_enrollment_result.result = result.parseResult(element.find('result'))
-    pre_enrollment_result.name = element.find('name').text
-    if pre_enrollment_result.result.value == 'SUCCESS':
-        pre_enrollment_result.form_elements = []
-        for fe in element.findall('form_element'):
-            pre_enrollment_result.form_elements.append(FormElement.parseFormElement(fe))
-    return pre_enrollment_result
+    def __init__(self, xml):
+        element = ElementTree.XML(xml)
+        assert element.tag == 'enrollment_pretext'
+        self.result = Result(element.find('result'))
+        self.name = element.find('name').text
+        if self.result.value == 'SUCCESS':
+            self.form_elements = []
+            for fe in element.findall('form_element'):
+                self.form_elements.append(FormElement(fe))
 
 class EnrollmentResult:
-    pass
-
-def parseEnrollmentResult(xml):
-    element = ElementTree.XML(xml)
-    print element.tag
-    enrollment_result = EnrollmentResult() 
-    enrollment_result.result = result.parseResult(element.find('result'))
-    enrollment_result.name = element.find('name').text
-    return enrollment_result
+    def __init__(self, xml):
+        element = ElementTree.XML(xml)
+        print element.tag
+        self.result = Result(element.find('result'))
+        selfname = element.find('name').text
 
 """
      <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -52,21 +45,16 @@ def parseEnrollmentResult(xml):
      </authentication_pretext>
 """
 class AuthenticationResult:
-    pass
-
-def parseAuthenticationResult(xml):
-    print xml
-    element = ElementTree.XML(xml)
-    assert element.tag == 'authentication_pretext' or element.tag == 'authentication_context'
-    authentication_result = AuthenticationResult()
-    authentication_result.result = result.parseResult(element.find('result'))
-    authentication_result.name = element.find('name').text
-    if authentication_result.result.value == 'SUCCESS' or authentication_result.result.value == 'CONTINUE':
-        authentication_result.display_items = []
-        for di in element.findall('display_item'):
-            authentication_result.display_items.append(display_item.parseDisplayItem(di))
-    return authentication_result
-
+    def __init__(self, xml):
+        print xml
+        element = ElementTree.XML(xml)
+        assert element.tag == 'authentication_pretext' or element.tag == 'authentication_context'
+        self.result = Result(element.find('result'))
+        self.name = element.find('name').text
+        if self.result.value == 'SUCCESS' or self.result.value == 'CONTINUE':
+            self.display_items = []
+            for di in element.findall('display_item'):
+                self.display_items.append(DisplayItem(di))
     
 class IdentityServiceProvider:
     def __init__(self, key_file, cert_file):
@@ -75,24 +63,24 @@ class IdentityServiceProvider:
     def preAuthenticate(self, name, host):
         data = { 'name': name, 'client_ip' : host }
         xml = self.connection_handler.sendMessage('preauthenticate', data)
-        return parseAuthenticationResult(xml)
+        return AuthenticationResult(xml)
 
     def authenticate(self, name, host, params):
         xml = self.makeRequest(name, host, params, 'authenticate')
-        return parseAuthenticationResult(xml)
+        return AuthenticationResult(xml)
 
     def preEnroll(self, name, host):
         data = { 'name' : name, 'client_ip' : host}
         xml = self.connection_handler.sendMessage("preenroll", data)
-        return parsePreEnrollmentResult(xml)
+        return PreEnrollmentResult(xml)
 
     def enroll(self, name, host, params):
         xml = self.makeRequest(name, host, params, 'enroll')
-        return parseEnrollmentResult(xml)
+        return EnrollmentResult(xml)
 
     def reenroll(self, name, host, params):
         xml = self.makeRequest(name, host, params, 'reenroll')
-        return parseEnrollmentResult(xml)
+        return EnrollmentResult(xml)
 
     def makeRequest(self, name, host, params, method):
         data = { 'name' : name, 'client_ip' : host }
@@ -107,10 +95,7 @@ class IdentityServiceProvider:
             status = True
         return status
 
-
-
 """
-
   function batchEnroll($fp, $readfunction) {
     $status = FALSE;
     error_log('batch enroll with readfunction: ' . $readfunction);
