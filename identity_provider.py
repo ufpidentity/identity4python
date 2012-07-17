@@ -30,7 +30,7 @@ class EnrollmentResult:
         element = ElementTree.XML(xml)
         print element.tag
         self.result = Result(element.find('result'))
-        selfname = element.find('name').text
+        self.name = element.find('name').text
 
 """
      <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
