@@ -74,7 +74,7 @@ class IdentityServiceProvider:
         xml = self.makeRequest(name, host, params, 'enroll')
         return EnrollmentResult(xml)
 
-    def reenroll(self, name, host, params):
+    def reEnroll(self, name, host, params):
         xml = self.makeRequest(name, host, params, 'reenroll')
         return EnrollmentResult(xml)
 
