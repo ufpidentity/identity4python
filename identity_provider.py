@@ -21,9 +21,7 @@ class PreEnrollmentResult:
         self.result = Result(element.find('result'))
         self.name = element.find('name').text
         if self.result.value == 'SUCCESS':
-            self.form_elements = []
-            for fe in element.findall('form_element'):
-                self.form_elements.append(FormElement(fe))
+            self.form_elements = [FormElement(fe) for fe in element.findall('form_element')]
 
 class EnrollmentResult:
     def __init__(self, xml):
@@ -52,9 +50,7 @@ class AuthenticationResult:
         self.result = Result(element.find('result'))
         self.name = element.find('name').text
         if self.result.value in ('SUCCESS', 'CONTINUE'):
-            self.display_items = []
-            for di in element.findall('display_item'):
-                self.display_items.append(DisplayItem(di))
+            self.display_items = [DisplayItem(di) for di in element.findall('display_item')]
     
 class IdentityServiceProvider:
     def __init__(self, key_file, cert_file):
