@@ -51,7 +51,7 @@ class AuthenticationResult:
         assert element.tag == 'authentication_pretext' or element.tag == 'authentication_context'
         self.result = Result(element.find('result'))
         self.name = element.find('name').text
-        if self.result.value == 'SUCCESS' or self.result.value == 'CONTINUE':
+        if self.result.value in ('SUCCESS', 'CONTINUE'):
             self.display_items = []
             for di in element.findall('display_item'):
                 self.display_items.append(DisplayItem(di))
