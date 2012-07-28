@@ -85,11 +85,8 @@ class IdentityServiceProvider:
         return self.connection_handler.sendMessage(method, data)
 
     def checkEnrollStatus(self):
-        status = False
         http_status = self.connection_handler.checkEnrollStatus('enroll/status')
-        if http_status == 200:
-            status = True
-        return status
+        return (http_status == 200)
 
 """
   function batchEnroll($fp, $readfunction) {
