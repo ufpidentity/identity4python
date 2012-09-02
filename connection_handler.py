@@ -52,7 +52,7 @@ class IdentityConnectionHandler:
 }
 """
 def main():
-    connection_handler = IdentityConnectionHandler('example.key.noencrypt.pem', 'example.crt.pem')
+    connection_handler = IdentityConnectionHandler('example.key.noencrypt.pem', 'example.com.crt.pem')
     xml = connection_handler.sendMessage('preauthenticate', { 'name' : 'guest', 'client_ip' : '192.168.2.105' })
     print xml
 

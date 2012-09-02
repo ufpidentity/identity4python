@@ -102,7 +102,7 @@ class IdentityServiceProvider:
 """
 
 def main():
-    identity_provider = IdentityServiceProvider('example.key.noencrypt.pem', 'example.crt.pem')
+    identity_provider = IdentityServiceProvider('example.key.noencrypt.pem', 'example.com.crt.pem')
     authentication_result = identity_provider.preAuthenticate('guest', '10.10.1.100') 
     print authentication_result.result
     if (authentication_result.result.value != 'FAILURE'):
