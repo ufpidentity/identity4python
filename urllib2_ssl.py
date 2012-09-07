@@ -183,6 +183,7 @@ else: # ssl is available
             if self.ca_certs is not None:
                 kwargs.update(
                     cert_reqs=ssl.CERT_REQUIRED,
+                    ssl_version=ssl.PROTOCOL_TLSv1,
                     ca_certs=self.ca_certs)
             self.sock = ssl.wrap_socket(sock,
                                         keyfile=self.key_file,
